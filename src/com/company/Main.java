@@ -10,11 +10,15 @@ import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.Year;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAccessor;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 
@@ -96,15 +100,34 @@ public class Main {
 
                     } else if (correctDate(string)) {
                         try {
+
+
                             String date = string.replace(".", "").replace("/", "");
-                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(date.length() == 6 ? "ddMMyy" : "ddMMyyyy");
+        /*                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern(date.length() == 6 ? "ddMMyy" : "ddMMyyyy");
                             LocalDate inputDate = LocalDate.parse(date, formatter);
+*/
+
+
+                            DateTimeFormatter dtf2 =
+                                    new DateTimeFormatterBuilder().appendPattern("ddMM")
+                                            .appendValueReduced(
+                                                    ChronoField.YEAR, 2, 2, Year.now().getValue() - 80
+                                            ).toFormatter();
+
+                            LocalDate inputDate1 = LocalDate.parse(date, dtf2);
+                            System.out.println("Вы ввели дату "+inputDate1);
+
+
+
+
                             list = company.stream()
-                                    .filter(x -> LocalDate.parse(x.getEgrul_date(), DateTimeFormatter.ofPattern("yyyy-MM-dd")).isAfter(inputDate))
+                                    .filter(x -> LocalDate.parse(x.getEgrul_date(), DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH)).isAfter(inputDate1))
                                     .collect(Collectors.toList());
+
                             if (list.isEmpty()) {
                                 System.err.println("Организации созданы ранее, чем введенная дата. Введите другую дату. Для выхода введите exit.");
                             } else {
+
                                 list.forEach(System.out::println);
                             }
 
