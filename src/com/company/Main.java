@@ -111,7 +111,7 @@ public class Main {
                             DateTimeFormatter dtf2 =
                                     new DateTimeFormatterBuilder().appendPattern("ddMM")
                                             .appendValueReduced(
-                                                    ChronoField.YEAR, 2, 2, Year.now().getValue() - 80
+                                                    ChronoField.YEAR, 2, 4, Year.now().getValue() - 80
                                             ).toFormatter();
 
                             LocalDate inputDate1 = LocalDate.parse(date, dtf2);
