@@ -27,6 +27,7 @@ public class Main {
     public static final String fileName = "test.json";
     private static List<Pojo> company;
     private static List<Pojo> list;
+    private static List<Securities> list1;
 
 
     public static void main(String[] args) throws IOException {
@@ -87,10 +88,23 @@ public class Main {
                     if (string.length() == 3) {
 
                         String finalString = string;
-                        company.stream()
+                        list1=company.stream()
                                 .flatMap(a -> Arrays.stream(a.getSecurities()))
                                 .filter(s -> s.getCurrency().getCode().equals(finalString))
-                                .forEach(System.out::println);
+                                .collect(Collectors.toList());
+                        if (list1.isEmpty()) {
+                            System.err.println("Вы ввели валюту в неправильном формате.Верные форматы валюты EUR, USD, RUB . Для выхода введите exit.");
+                        } else {
+                            System.out.println("\n" + "Ценные бумаги использующие валюту" + " " + string + ": ");
+                            for (Securities comp : list1
+                            ) {
+
+                                    System.out.println("Id ценных бумаг " + comp.getId() + ";" + "  Код ценных бумаг : " + comp.getCode());
+
+
+
+                            }
+                        }
 
 
                         System.out.println("\n" + "---------------------------------------------------------------" + "\n" + "Введите дату в формате «ДД.ММ.ГГГГ», или «ДД.ММ,ГГ» или «ДД/ММ/ГГГГ» или «ДД/ММ/ГГ» (без кавычек), что бы получить название и дату создания всех организаций, основаннных после введеной даты: ");
@@ -115,9 +129,7 @@ public class Main {
                                             ).toFormatter();
 
                             LocalDate inputDate1 = LocalDate.parse(date, dtf2);
-                            System.out.println("Вы ввели дату "+inputDate1);
-
-
+                            System.out.println("Вы ввели дату " + inputDate1);
 
 
                             list = company.stream()
@@ -127,8 +139,15 @@ public class Main {
                             if (list.isEmpty()) {
                                 System.err.println("Организации созданы ранее, чем введенная дата. Введите другую дату. Для выхода введите exit.");
                             } else {
+                                System.out.println("\n" + "Оранизации созданные позже введеной даты:");
+                                for (Pojo comp : list
+                                ) {
 
-                                list.forEach(System.out::println);
+
+                                    System.out.println("Название организации : " + comp.getName_full() + ";" + "  Дата создания организации: " + comp.getEgrul_date());
+
+                                }
+                                /*list.forEach(System.out::println);*/
                             }
 
                         } catch (Exception e) {
